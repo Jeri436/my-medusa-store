@@ -24,9 +24,15 @@ export const POST = async (
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
 
+  const filters: Record<string, unknown> = {}
+  if (req.query.product_id) {
+    filters.product_id = req.query.product_id
+  }
+
   const { data: brandProducts } = await query.graph({
     entity: BrandProductLink.entryPoint,
-    fields: ['*', 'product.*'],
+    fields: ['*', 'brand.*', 'product.*'],
+    filters,
   })
 
   res.json({ brand_products: brandProducts })
